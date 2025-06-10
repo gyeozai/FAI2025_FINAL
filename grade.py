@@ -1,6 +1,7 @@
 import subprocess
 import json
 import math
+import time
 
 INITIAL_STACK = 1000
 ROUNDS_PER_BASELINE = 5
@@ -9,22 +10,27 @@ SCRIPT_NAME = "start_game.py"  # change this if your filename is different
 def run_match(baseline_index):
     results = []
     wins = 0
+    start_time = time.time()
     for game_num in range(ROUNDS_PER_BASELINE):
         print(f"  → Game {game_num + 1}")
         try:
             output = subprocess.check_output(
-                ["python", SCRIPT_NAME, "-b", str(baseline_index), "-p"],
+                ["python", SCRIPT_NAME, "-b", str(baseline_index)],
                 universal_newlines=True
             )
 
-            # Extract JSON portion
+            action_count = output.count("[ACTION]")
+            timeout_count = output.count("[TIMEOUT]")
+            if timeout_count > 0:
+                print(f"    \033[91mTimeout count: {timeout_count} / {action_count}\033[0m")
+            output = output[output.find('{\n    "rule":'):]
+
             lines = output.strip().split('\n')
             json_start = next(i for i, line in enumerate(lines) if line.strip().startswith('{'))
             json_str = '\n'.join(lines[json_start:])
             result = json.loads(json_str)
             results.append(result)
 
-            # Early exit if nottako wins 3
             if nottako_won(result):
                 wins += 1
                 if wins == 3:
@@ -36,6 +42,9 @@ def run_match(baseline_index):
         except Exception as e:
             print(f"Unexpected error: {e}")
             raise
+
+    end_time = time.time()
+    print(f"    Runtime: {end_time - start_time:.2f}s")
     return results
 
 def get_nottako_result(result):
@@ -78,7 +87,7 @@ def main():
         results = run_match(i)
         score = grade_baseline(results)
         total_score += score
-        print(f"Score vs baseline {i}: {score:.1f}")
+        print(f"    Score: {score:.1f}")
     print(f"\nTotal Score: {total_score:.1f}")
 
 if __name__ == "__main__":

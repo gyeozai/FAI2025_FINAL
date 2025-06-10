@@ -57,10 +57,16 @@ class BasePokerPlayer(object):
         """Called from Dealer when ask message received from RoundManager"""
         valid_actions, hole_card, round_state = self.__parse_ask_message(message)
 
+        player_type = self.__class__.__module__.split('.')[0]
+        if player_type == "agents":
+                print("\033[91m[ACTION]\033[0m")
+
         try:
-            with timeout(50):
+            with timeout(5):
                 action, amount = self.declare_action(valid_actions, hole_card, round_state)
         except:
+            if player_type == "agents":
+                print("\033[91m[TIMEOUT]\033[0m")
             action, amount = valid_actions[0]["action"], valid_actions[0]["amount"]
         return action, amount
 

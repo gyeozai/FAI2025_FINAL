@@ -5,7 +5,12 @@ from contextlib import redirect_stdout
 from game.game import setup_config, start_poker
 from agents.call_player import setup_ai as call_ai
 from agents.random_player import setup_ai as random_ai
-from agents.nottako import setup_ai as nottako
+from agents.console_player import setup_ai as console_ai
+
+from agents.test_player import setup_ai as test_ai
+from agents.mcs_player import setup_ai as mcs_ai
+from agents.deepq_player import setup_ai as deepq_ai
+from agents.expert_player import setup_ai as expert_ai
 
 from baseline0 import setup_ai as baseline0_ai
 from baseline1 import setup_ai as baseline1_ai
@@ -27,6 +32,9 @@ baselines = [
     baseline7_ai,
 ]
 
+# TODO: Change this to the AI you want to test against
+player = mcs_ai
+
 parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument("-b", type=int)
 parser.add_argument("-p", action="store_true")
@@ -45,23 +53,18 @@ def run_game(player1_ai, player2_ai, verbose=1, suppress_output=False):
 if args.b is not None:
     if args.p:
         print(f"baseline {args.b}")
-        result = run_game(baselines[args.b], nottako, verbose=1, suppress_output=True)
+        result = run_game(baselines[args.b], player, verbose=1, suppress_output=True)
         print(json.dumps(result, indent=4))
     else:
         print(f"baseline {args.b}")
-        result = run_game(baselines[args.b], nottako, verbose=1, suppress_output=False)
+        result = run_game(baselines[args.b], player, verbose=1, suppress_output=False)
         print(json.dumps(result, indent=4))
 else:
     for i, setup_ai in enumerate(baselines):
         print(f"baseline {i}")
         if args.p:
-            result = run_game(setup_ai, nottako, verbose=0, suppress_output=True)
+            result = run_game(setup_ai, player, verbose=0, suppress_output=True)
             print(json.dumps(result, indent=4))
         else:
-            result = run_game(setup_ai, nottako, verbose=0, suppress_output=False)
+            result = run_game(setup_ai, player, verbose=0, suppress_output=False)
             print(json.dumps(result, indent=4))
-
-
-
-
-
