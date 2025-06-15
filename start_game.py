@@ -3,14 +3,9 @@ import argparse
 import os
 from contextlib import redirect_stdout
 from game.game import setup_config, start_poker
-from agents.call_player import setup_ai as call_ai
-from agents.random_player import setup_ai as random_ai
-from agents.console_player import setup_ai as console_ai
 
+# TODO: copy the code of agent you want to test to agents/test_player.py
 from agents.test_player import setup_ai as test_ai
-from agents.mcs_player import setup_ai as mcs_ai
-from agents.deepq_player import setup_ai as deepq_ai
-from agents.expert_player import setup_ai as expert_ai
 
 from baseline0 import setup_ai as baseline0_ai
 from baseline1 import setup_ai as baseline1_ai
@@ -32,8 +27,7 @@ baselines = [
     baseline7_ai,
 ]
 
-# TODO: Change this to the AI you want to test against
-player = mcs_ai
+player = test_ai
 
 parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument("-b", type=int)

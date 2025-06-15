@@ -62,7 +62,7 @@ class BasePokerPlayer(object):
                 print("\033[91m[ACTION]\033[0m")
 
         try:
-            with timeout(5):
+            with timeout(10):
                 action, amount = self.declare_action(valid_actions, hole_card, round_state)
         except:
             if player_type == "agents":

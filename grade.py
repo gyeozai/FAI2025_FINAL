@@ -2,10 +2,12 @@ import subprocess
 import json
 import math
 import time
+from agents.test_player import setup_ai as grade_ai
 
 INITIAL_STACK = 1000
 ROUNDS_PER_BASELINE = 5
 SCRIPT_NAME = "start_game.py"  # change this if your filename is different
+PLAYER_NAME = grade_ai().__class__.__name__
 
 def run_match(baseline_index):
     results = []
@@ -81,6 +83,7 @@ def grade_baseline(results):
     return min(score, 3.0)
 
 def main():
+    print(f"\n[ player: {PLAYER_NAME} ]")
     total_score = 0.0
     for i in range(1, 8):  # Only baseline 1 through 7
         print(f"\nRunning baseline {i}...")
